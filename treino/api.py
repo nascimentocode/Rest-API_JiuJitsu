@@ -5,6 +5,7 @@ from ninja.errors import HttpError
 from typing import List
 from .graduacao import *
 from datetime import date
+
 treino_router = Router()
 
 @treino_router.post("/", response={200: StudentsSchema})
@@ -27,11 +28,13 @@ def create_student(request, student_schema: StudentsSchema):
 
     return student
 
+
 @treino_router.get("/students/", response=List[StudentsSchema])
 def list_students(request):
     students = Students.objects.all()
     
     return students
+
 
 @treino_router.get("/progress_student/", response={200: ProgressStudentSchema})
 def progress_student(request, student_email: str):
@@ -53,8 +56,8 @@ def progress_student(request, student_email: str):
         "total_class": total_classes_held_belt,
         "classes_required_for_next_belt": missing_classes      
     }
-    
-    
+
+
 @treino_router.post("/aula_realizada/", response={200: str})
 def class_held(request, class_held: ClassHeldSchema):
     qtd = class_held.dict()['qtd']
@@ -72,12 +75,12 @@ def class_held(request, class_held: ClassHeldSchema):
         )
         classes_held.save()
     
-    return 200, f"Aula marcadaa como realizada para o aluno {student.name}"
+    return 200, f"Aula marcada como realizada para o aluno {student.name}"
 
-@treino_router.put("/alunos/{student_id}")
+
+@treino_router.put("/alunos/{student_id}", response=StudentsSchema)
 def update_student(request, student_id: int, student_data: StudentsSchema):
     student = Students.objects.get(id=student_id)    
-    
     age = date.today() - student.birthdate
     
     if int(age.days/365) < 18 and student_data.dict()['belt'] in ('A', 'R', 'M', 'P'):
