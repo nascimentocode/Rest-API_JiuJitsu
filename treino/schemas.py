@@ -9,11 +9,11 @@ class StudentsSchema(ModelSchema):
 
 class ProgressStudentSchema(Schema):
     email: str
-    nome: str
+    name: str
     belt: str
     total_class: int
     classes_required_for_next_belt: int
 
 class ClassHeldSchema(Schema):
-    qtd: Optional[int]
+    qtd: Optional[int] = 1
     student_email: str
